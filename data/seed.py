@@ -210,7 +210,7 @@ def seed(session: Session) -> None:
 
     # Модификация: «Маргарита острая»
     mod = svc.create_modification(items["Пицца Маргарита 30 см"].id, ModificationCreate(
-        name="Пицца Маргарита острая 30 см", number="PZ-001-M1", reason="Сезонное меню"))
+        name="Пицца Маргарита острая 30 см", number="PZ-001-01", reason="Сезонное меню"))
     svc.update_component(mod.id, items["Моцарелла"].id,
                          BomComponentUpdate(quantity=D("150"), reason="В острой версии больше сыра"))
     svc.add_component(mod.id, BomComponentAdd(component_item_id=items["Халапеньо"].id, quantity=D("30"),

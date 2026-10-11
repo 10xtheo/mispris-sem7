@@ -62,9 +62,9 @@ def test_modification_requires_name():
 
 # ------------------------------------------------------------ вспомогательные функции
 def test_next_modification_number():
-    assert next_modification_number("PZ-01", set()) == "PZ-01-M1"
-    assert next_modification_number("PZ-01", {"PZ-01-M1", "PZ-01-M2"}) == "PZ-01-M3"
-    assert next_modification_number("PZ-01", {"PZ-01-M2"}) == "PZ-01-M1"
+    assert next_modification_number("PZ-001", set()) == "PZ-001-01"
+    assert next_modification_number("PZ-001", {"PZ-001-01", "PZ-001-02"}) == "PZ-001-03"
+    assert next_modification_number("PZ-001", {"PZ-001-02"}) == "PZ-001-01"
 
 
 def test_rounded_only_selected_decimal_fields():

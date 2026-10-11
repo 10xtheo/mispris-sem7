@@ -170,7 +170,7 @@ def spicy(cat):
 def test_modification_defaults(cat, spicy):
     base = cat.items["Пицца Маргарита"]
     assert spicy.base_item_id == base.id
-    assert spicy.number == f"{base.number}-M1"
+    assert spicy.number == f"{base.number}-01"
     assert spicy.item_type_id == base.item_type_id and spicy.item_class_id == base.item_class_id
     assert [m.id for m in cat.service.get_modifications(base.id)] == [spicy.id]
     first = cat.service.history(spicy.id)[0]

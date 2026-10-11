@@ -51,7 +51,7 @@ class ModificationCreate(SQLModel):
     """CREATE_MODIFICATION: новая модификация на основе базового изделия."""
 
     name: str = Field(min_length=1, max_length=500)
-    number: Optional[str] = Field(default=None, max_length=50, description="По умолчанию <номер базы>-M<n>")
+    number: Optional[str] = Field(default=None, max_length=50, description="По умолчанию <обозначение базы>-01, -02, ... (исполнения по ЕСКД)")
     article: Optional[str] = Field(default=None, max_length=100)
     reason: Optional[str] = Field(default=None, max_length=500)
 

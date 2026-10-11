@@ -157,7 +157,7 @@ def test_modifications_api(client, cat):
     r = client.post(url(cat, "Пицца Маргарита", "/modifications"), json={"name": "Маргарита острая"})
     assert r.status_code == 201
     mod = r.json()
-    assert mod["base_item_id"] == cat.id("Пицца Маргарита") and mod["number"].endswith("-M1")
+    assert mod["base_item_id"] == cat.id("Пицца Маргарита") and mod["number"].endswith("-01")
     lst = client.get(url(cat, "Пицца Маргарита", "/modifications")).json()
     assert [m["id"] for m in lst] == [mod["id"]]
     spec = client.get(f"/api/items/{mod['id']}/bom").json()["rows"]

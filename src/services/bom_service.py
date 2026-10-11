@@ -60,11 +60,11 @@ def rounded(row: dict[str, Any], *fields: str) -> dict[str, Any]:
 
 
 def next_modification_number(base_number: str, existing: set[str]) -> str:
-    """Обозначение модификации по умолчанию: <база>-M1, <база>-M2, ..."""
+    """Обозначение исполнения по ЕСКД: <обозначение базы>-01, -02, ..."""
     n = 1
-    while f"{base_number}-M{n}" in existing:
+    while f"{base_number}-{n:02d}" in existing:
         n += 1
-    return f"{base_number}-M{n}"
+    return f"{base_number}-{n:02d}"
 
 
 class BomService:
