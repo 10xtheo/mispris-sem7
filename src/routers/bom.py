@@ -26,7 +26,7 @@ from src.services.bom_service import BomService
 
 router = APIRouter()
 
-AT_QUERY = Query(default=None, description="Состояние спецификации на момент времени (ISO 8601); по умолчанию — сейчас")
+AT_QUERY = Query(default=None, description="Момент времени (ISO 8601), на который показать состав; по умолчанию — сейчас")
 
 
 def get_bom_service(session: Session = Depends(get_session)) -> BomService:
@@ -41,17 +41,17 @@ def get_bom_service(session: Session = Depends(get_session)) -> BomService:
     )
 
 
-@router.get("/{item_id}/bom", response_model=BomSpecRead, summary="Действующая спецификация (1 уровень)")
+@router.get("/{item_id}/bom", response_model=BomSpecRead)
 def get_spec(item_id: int, at: Optional[datetime] = AT_QUERY, service: BomService = Depends(get_bom_service)):
     return service.get_spec(item_id, at)
 
 
-@router.get("/{item_id}/bom/tree", response_model=BomTreeRead, summary="FIND_BOM: состав на всю глубину")
+@router.get("/{item_id}/bom/tree", response_model=BomTreeRead)
 def find_bom(item_id: int, at: Optional[datetime] = AT_QUERY, service: BomService = Depends(get_bom_service)):
     return service.find_bom(item_id, at)
 
 
-@router.get("/{item_id}/bom/norms", response_model=NormsRead, summary="CALC_BOM: сводные нормы расхода")
+@router.get("/{item_id}/bom/norms", response_model=NormsRead)
 def calc_bom(
     item_id: int,
     quantity: Decimal = Query(default=Decimal("1"), gt=0, description="Количество изделий"),
@@ -62,12 +62,12 @@ def calc_bom(
     return service.calc_bom(item_id, quantity, class_id, at)
 
 
-@router.post("/{item_id}/bom", response_model=BomRowRead, status_code=201, summary="Добавить компонент")
+@router.post("/{item_id}/bom", response_model=BomRowRead, status_code=201)
 def add_component(item_id: int, data: BomComponentAdd, service: BomService = Depends(get_bom_service)):
     return service.add_component(item_id, data)
 
 
-@router.put("/{item_id}/bom/{component_id}", response_model=BomRowRead, summary="Изменить норму расхода")
+@router.put("/{item_id}/bom/{component_id}", response_model=BomRowRead)
 def update_component(
     item_id: int, component_id: int, data: BomComponentUpdate, service: BomService = Depends(get_bom_service)
 ):
@@ -75,7 +75,7 @@ def update_component(
 
 
 @router.post(
-    "/{item_id}/bom/{component_id}/replace", response_model=BomRowRead, summary="Заменить компонент"
+    "/{item_id}/bom/{component_id}/replace", response_model=BomRowRead
 )
 def replace_component(
     item_id: int, component_id: int, data: BomComponentReplace, service: BomService = Depends(get_bom_service)
@@ -83,7 +83,7 @@ def replace_component(
     return service.replace_component(item_id, component_id, data)
 
 
-@router.delete("/{item_id}/bom/{component_id}", status_code=204, summary="Удалить компонент из состава")
+@router.delete("/{item_id}/bom/{component_id}", status_code=204)
 def remove_component(
     item_id: int,
     component_id: int,
@@ -93,18 +93,18 @@ def remove_component(
     service.remove_component(item_id, component_id, reason)
 
 
-@router.get("/{item_id}/bom/changes", response_model=List[ChangeRead], summary="История изменений спецификации")
+@router.get("/{item_id}/bom/changes", response_model=List[ChangeRead])
 def history(item_id: int, service: BomService = Depends(get_bom_service)):
     return service.history(item_id)
 
 
 @router.post(
-    "/{item_id}/modifications", response_model=ItemRead, status_code=201, summary="CREATE_MODIFICATION"
+    "/{item_id}/modifications", response_model=ItemRead, status_code=201
 )
 def create_modification(item_id: int, data: ModificationCreate, service: BomService = Depends(get_bom_service)):
     return service.create_modification(item_id, data)
 
 
-@router.get("/{item_id}/modifications", response_model=List[ItemRead], summary="Модификации изделия")
+@router.get("/{item_id}/modifications", response_model=List[ItemRead])
 def list_modifications(item_id: int, service: BomService = Depends(get_bom_service)):
     return service.get_modifications(item_id)

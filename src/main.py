@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 
 from src.config.config import settings
 from src.core.errors import DomainError
+from src.routers.summaries import apply_summaries
 from src.routers import (
     bom,
     classifiers,
@@ -56,6 +57,9 @@ app.include_router(packaging.router, prefix="/api/packaging", tags=["Упако�
 app.include_router(positions.router, prefix="/api/positions", tags=["Позиции и прейскуранты"])
 
 
-@app.get("/health", tags=["health"])
+@app.get("/health", tags=["Служебное"])
 def health():
     return {"status": "ok"}
+
+
+apply_summaries(app)
