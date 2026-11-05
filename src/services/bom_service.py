@@ -1,8 +1,8 @@
 """Задание №5: материальная спецификация изделий (Bill of Materials).
 
 Процедуры задания и их реализация:
-    FIND_BOM            -> BomService.find_bom      (SQL-функция find_bom)
-    CALC_BOM            -> BomService.calc_bom      (SQL-функция calc_bom)
+    FIND_BOM            -> BomService.find_bom      (BomCalculator.find_bom)
+    CALC_BOM            -> BomService.calc_bom      (BomCalculator.calc_bom)
     CREATE_MODIFICATION -> BomService.create_modification
     REGISTER_CHANGE     -> BomService._register_change (вызывается каждой правкой состава)
 
@@ -23,10 +23,16 @@ from typing import Any, Optional, Sequence
 from src.core.errors import BusinessRuleError, ConflictError, NotFoundError
 from src.models.bom import ItemBom, ItemChange
 from src.models.items import Item
-from src.repository.bom_repository import ItemBomRepository, ItemChangeRepository, ModificationRepository
+from src.repository.bom_repository import (
+    ItemBomRepository,
+    ItemCatalogRepository,
+    ItemChangeRepository,
+    ModificationRepository,
+)
 from src.repository.classifier_repository import ItemClassifierRepository
 from src.repository.enum_repository import EnumValueRepository
 from src.repository.item_repository import ItemRepository, UnitQuantityRepository
+from src.services.bom_calculator import BomCalculator
 from src.schemas.bom import (
     BomComponentAdd,
     BomComponentReplace,
@@ -77,6 +83,7 @@ class BomService:
         enum_values: EnumValueRepository,
         units: UnitQuantityRepository,
         classifiers: ItemClassifierRepository,
+        catalog: ItemCatalogRepository,
     ) -> None:
         self.items = items
         self.boms = boms
@@ -85,6 +92,8 @@ class BomService:
         self.enum_values = enum_values
         self.units = units
         self.classifiers = classifiers
+        self.catalog = catalog
+        self.calc = BomCalculator(boms, catalog)
 
     # ------------------------------------------------------------ helpers
     def _item(self, item_id: int) -> Item:
@@ -147,7 +156,7 @@ class BomService:
         return unit_quantity_id
 
     def _check_no_cycle(self, parent: Item, component: Item, at: datetime) -> None:
-        if self.boms.has_cycle(parent.id, at):  # type: ignore[arg-type]
+        if self.calc.has_cycle(parent.id, at):  # type: ignore[arg-type]
             raise BusinessRuleError(
                 f"Добавление «{component.name}» в состав «{parent.name}» создаёт цикл в спецификации"
             )
@@ -169,7 +178,7 @@ class BomService:
         )
 
     def _effective_or_404(self, parent: Item, component_item_id: int, at: datetime) -> dict[str, Any]:
-        row = self.boms.effective_row(parent.id, component_item_id, at)  # type: ignore[arg-type]
+        row = self.calc.effective_row(parent.id, component_item_id, at)  # type: ignore[arg-type]
         if row is None:
             raise NotFoundError(
                 f"Компонент {component_item_id} не входит в действующий состав «{parent.name}»"
@@ -185,7 +194,7 @@ class BomService:
         own = self.boms.get_own_active(parent.id, eff["component_item_id"])  # type: ignore[arg-type]
         if own is not None:
             self.boms.close(own, at)
-        if self.boms.effective_row(parent.id, eff["component_item_id"], at) is None:  # type: ignore[arg-type]
+        if self.calc.effective_row(parent.id, eff["component_item_id"], at) is None:  # type: ignore[arg-type]
             return None
         return self.boms.create(
             {
@@ -202,21 +211,23 @@ class BomService:
         )
 
     def _spec_row(self, parent: Item, component_item_id: int, at: datetime) -> BomRowRead:
-        return BomRowRead(**self._effective_or_404(parent, component_item_id, at))
+        self._effective_or_404(parent, component_item_id, at)
+        row = next(r for r in self.calc.effective(parent.id, at) if r["component_item_id"] == component_item_id)  # type: ignore[arg-type]
+        return BomRowRead(**row)
 
     # ------------------------------------------------------------ чтение
     def get_spec(self, item_id: int, at: Optional[datetime] = None) -> BomSpecRead:
         """Действующая спецификация изделия (один уровень) на дату."""
         item = self._item(item_id)
         at = at or utcnow()
-        rows = [BomRowRead(**r) for r in self.boms.effective(item_id, at)]
+        rows = [BomRowRead(**r) for r in self.calc.effective(item_id, at)]
         return BomSpecRead(item_id=item_id, item_name=item.name, base_item_id=item.base_item_id, at=at, rows=rows)
 
     def find_bom(self, item_id: int, at: Optional[datetime] = None) -> BomTreeRead:
         """FIND_BOM: все компоненты на всю глубину вложенности."""
         item = self._item(item_id)
         at = at or utcnow()
-        nodes = [BomTreeNode(**rounded(r, "norm", "qty_base")) for r in self.boms.find_bom(item_id, at)]
+        nodes = [BomTreeNode(**rounded(r, "norm", "qty_base")) for r in self.calc.find_bom(item_id, at)]
         return BomTreeRead(item_id=item_id, item_name=item.name, at=at, nodes=nodes)
 
     def calc_bom(
@@ -233,41 +244,37 @@ class BomService:
         if class_id is not None and not self.classifiers.get_by_id(class_id):
             raise NotFoundError(f"Класс изделий {class_id} не найден")
         at = at or utcnow()
-        rows = [NormRow(**rounded(r, "total_quantity")) for r in self.boms.calc_bom(item_id, quantity, class_id, at)]
+        rows = [NormRow(**rounded(r, "total_quantity")) for r in self.calc.calc_bom(item_id, quantity, class_id, at)]
         return NormsRead(item_id=item_id, item_name=item.name, quantity=quantity, class_id=class_id, at=at, rows=rows)
 
     def history(self, item_id: int) -> list[ChangeRead]:
         """История изменений спецификации изделия: было → стало."""
         self._item(item_id)
-        result = []
-        for r in self.changes.history(item_id):
-            versions = {}
-            for side in ("old", "new"):
-                if r[f"{side}_bom_id"] is None:
-                    versions[side] = None
-                    continue
-                versions[side] = BomVersion(
-                    bom_id=r[f"{side}_bom_id"],
-                    component_item_id=r[f"{side}_component_item_id"],
-                    component_name=r[f"{side}_component_name"],
-                    quantity=r[f"{side}_quantity"],
-                    for_quantity=r[f"{side}_for_quantity"],
-                    is_excluded=r[f"{side}_is_excluded"],
-                    valid_from=r[f"{side}_valid_from"],
-                    valid_to=r[f"{side}_valid_to"],
-                )
-            result.append(
-                ChangeRead(
-                    id=r["id"],
-                    item_id=r["item_id"],
-                    change_type=r["change_type"],
-                    change_type_name=r["change_type_name"],
-                    change_date=r["change_date"],
-                    reason=r["reason"],
-                    old=versions["old"],
-                    new=versions["new"],
-                )
+        changes = self.changes.by_item(item_id)
+        boms = self.boms.get_many(b for c in changes for b in (c.old_bom_id, c.new_bom_id))
+        names = self.catalog.item_info(b.component_item_id for b in boms.values())
+        types = self.catalog.enum_values(c.change_type_id for c in changes)
+
+        def version(bom_id: Optional[int]) -> Optional[BomVersion]:
+            if bom_id is None or bom_id not in boms:
+                return None
+            b = boms[bom_id]
+            return BomVersion(
+                bom_id=b.id, component_item_id=b.component_item_id,
+                component_name=names.get(b.component_item_id, {}).get("component_name", ""),
+                quantity=b.quantity, for_quantity=b.for_quantity, is_excluded=b.is_excluded,
+                valid_from=b.valid_from, valid_to=b.valid_to,
             )
+
+        result = [
+            ChangeRead(
+                id=c.id, item_id=c.item_id,
+                change_type=types[c.change_type_id].code, change_type_name=types[c.change_type_id].name,
+                change_date=c.change_date, reason=c.reason,
+                old=version(c.old_bom_id), new=version(c.new_bom_id),
+            )
+            for c in changes
+        ]
         return result
 
     def get_modifications(self, item_id: int) -> Sequence[Item]:
@@ -283,7 +290,7 @@ class BomService:
             raise BusinessRuleError("Изделие не может входить в собственный состав")
         at = utcnow()
         own = self.boms.get_own_active(parent.id, component.id)  # type: ignore[arg-type]
-        if own is None and self.boms.effective_row(parent.id, component.id, at) is not None:  # type: ignore[arg-type]
+        if own is None and self.calc.effective_row(parent.id, component.id, at) is not None:  # type: ignore[arg-type]
             raise ConflictError(
                 f"Компонент «{component.name}» уже входит в состав (наследуется от базового изделия); "
                 "используйте изменение нормы расхода"
@@ -355,7 +362,7 @@ class BomService:
             raise BusinessRuleError("Новый компонент совпадает с заменяемым")
         at = utcnow()
         eff = self._effective_or_404(parent, component_item_id, at)
-        if self.boms.effective_row(parent.id, new_component.id, at) is not None:  # type: ignore[arg-type]
+        if self.calc.effective_row(parent.id, new_component.id, at) is not None:  # type: ignore[arg-type]
             raise ConflictError(f"Компонент «{new_component.name}» уже входит в состав «{parent.name}»")
         self._remove_effective(parent, eff, at)
         row = self._insert_row(

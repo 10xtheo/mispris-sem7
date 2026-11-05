@@ -10,7 +10,12 @@ from src.models.classifiers import ItemClassifier
 from src.models.enums import EnumValue
 from src.models.items import Item, UnitQuantity
 from src.models.units import UnitSimple
-from src.repository.bom_repository import ItemBomRepository, ItemChangeRepository, ModificationRepository
+from src.repository.bom_repository import (
+    ItemBomRepository,
+    ItemCatalogRepository,
+    ItemChangeRepository,
+    ModificationRepository,
+)
 from src.repository.classifier_repository import ItemClassifierRepository
 from src.repository.enum_repository import EnumValueRepository
 from src.repository.item_repository import ItemRepository, UnitQuantityRepository
@@ -29,6 +34,7 @@ def make_service(session: Session) -> BomService:
         enum_values=EnumValueRepository(session),
         units=UnitQuantityRepository(session),
         classifiers=ItemClassifierRepository(session),
+        catalog=ItemCatalogRepository(session),
     )
 
 

@@ -33,7 +33,12 @@ from src.models import (  # noqa: E402
     UnitQuantity,
     UnitSimple,
 )
-from src.repository.bom_repository import ItemBomRepository, ItemChangeRepository, ModificationRepository  # noqa: E402
+from src.repository.bom_repository import (  # noqa: E402
+    ItemBomRepository,
+    ItemCatalogRepository,
+    ItemChangeRepository,
+    ModificationRepository,
+)
 from src.repository.classifier_repository import ItemClassifierRepository  # noqa: E402
 from src.repository.enum_repository import EnumValueRepository  # noqa: E402
 from src.repository.item_repository import ItemRepository, UnitQuantityRepository  # noqa: E402
@@ -168,6 +173,7 @@ def seed(session: Session) -> None:
         items=ItemRepository(session), boms=ItemBomRepository(session), changes=ItemChangeRepository(session),
         modifications=ModificationRepository(session), enum_values=EnumValueRepository(session),
         units=UnitQuantityRepository(session), classifiers=ItemClassifierRepository(session),
+        catalog=ItemCatalogRepository(session),
     )
 
     def bom(parent, comp, qty, unit=None, for_qty="1", order=0, is_base=True, reason="Первичное заполнение"):

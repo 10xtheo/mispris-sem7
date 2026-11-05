@@ -119,7 +119,7 @@ class FakeEnums:
 def make_fake_service(items):
     return BomService(
         items=FakeItems(items), boms=None, changes=None, modifications=None,  # type: ignore[arg-type]
-        enum_values=FakeEnums(), units=None, classifiers=None,  # type: ignore[arg-type]
+        enum_values=FakeEnums(), units=None, classifiers=None, catalog=None,  # type: ignore[arg-type]
     )
 
 

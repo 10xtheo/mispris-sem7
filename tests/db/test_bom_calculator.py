@@ -1,4 +1,5 @@
-"""Уровень 2 — SQL-функции и ограничения БД (effective_bom, find_bom, calc_bom, bom_has_cycle)."""
+"""Уровень 2 — расчёты BomCalculator (действующая спецификация, FIND_BOM, CALC_BOM, циклы)
+и ограничения БД."""
 
 from datetime import datetime, timezone
 from decimal import Decimal
@@ -8,7 +9,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session
 
 from src.models.bom import ItemBom
-from src.repository.bom_repository import ItemBomRepository
+from src.repository.bom_repository import ItemBomRepository, ItemCatalogRepository
+from src.services.bom_calculator import BomCalculator
 from tests.helpers import build_food_catalog
 
 D = Decimal
@@ -28,26 +30,31 @@ def repo(session: Session) -> ItemBomRepository:
     return ItemBomRepository(session)
 
 
+@pytest.fixture()
+def calc(session: Session) -> BomCalculator:
+    return BomCalculator(ItemBomRepository(session), ItemCatalogRepository(session))
+
+
 def by_name(rows, key="component_name"):
     return {r[key]: r for r in rows}
 
 
-# ------------------------------------------------------------ effective_bom
-def test_effective_bom_one_level_in_order(cat, repo):
-    rows = repo.effective(cat.id("Пицца Маргарита"), now())
+# ------------------------------------------------------------ действующая спецификация
+def test_effective_bom_one_level_in_order(cat, repo, calc):
+    rows = calc.effective(cat.id("Пицца Маргарита"), now())
     assert [r["component_name"] for r in rows] == ["Тесто для пиццы", "Соус томатный", "Моцарелла", "Базилик"]
     assert all(not r["inherited"] for r in rows)
     moz = by_name(rows)["Моцарелла"]
     assert moz["quantity"] == D("120") and moz["unit_symbol"] == "г" and moz["base_unit_symbol"] == "кг"
 
 
-def test_effective_bom_of_material_is_empty(cat, repo):
-    assert repo.effective(cat.id("Мука пшеничная"), now()) == []
+def test_effective_bom_of_material_is_empty(cat, repo, calc):
+    assert calc.effective(cat.id("Мука пшеничная"), now()) == []
 
 
 # ------------------------------------------------------------ find_bom (FIND_BOM)
-def test_find_bom_full_depth_and_levels(cat, repo):
-    nodes = repo.find_bom(cat.id("Комбо на двоих"), now())
+def test_find_bom_full_depth_and_levels(cat, repo, calc):
+    nodes = calc.find_bom(cat.id("Комбо на двоих"), now())
     levels = {(n["component_name"], n["lvl"]) for n in nodes}
     assert ("Пицца Маргарита", 1) in levels
     assert ("Тесто для пиццы", 2) in levels
@@ -58,8 +65,8 @@ def test_find_bom_full_depth_and_levels(cat, repo):
     assert not any(n["is_cycle"] for n in nodes)
 
 
-def test_find_bom_accumulates_norm_with_unit_conversion(cat, repo):
-    nodes = repo.find_bom(cat.id("Комбо на двоих"), now())
+def test_find_bom_accumulates_norm_with_unit_conversion(cat, repo, calc):
+    nodes = calc.find_bom(cat.id("Комбо на двоих"), now())
     norms = {(n["component_name"], n["lvl"]): n["norm"] for n in nodes}
     assert norms[("Пицца Маргарита", 1)] == D("2")
     assert norms[("Тесто для пиццы", 2)] == D("0.5")
@@ -70,8 +77,8 @@ def test_find_bom_accumulates_norm_with_unit_conversion(cat, repo):
     assert norms[("Пармезан", 1)] == pytest.approx(D("0.03"))
 
 
-def test_find_bom_path_is_depth_first(cat, repo):
-    nodes = repo.find_bom(cat.id("Пицца Маргарита"), now())
+def test_find_bom_path_is_depth_first(cat, repo, calc):
+    nodes = calc.find_bom(cat.id("Пицца Маргарита"), now())
     names = [n["component_name"] for n in nodes]
     assert names == [
         "Тесто для пиццы", "Мука пшеничная", "Вода питьевая", "Дрожжи",
@@ -81,8 +88,8 @@ def test_find_bom_path_is_depth_first(cat, repo):
 
 
 # ------------------------------------------------------------ calc_bom (CALC_BOM)
-def test_calc_bom_all_materials_for_quantity(cat, repo):
-    rows = by_name(repo.calc_bom(cat.id("Комбо на двоих"), D("10"), None, now()))
+def test_calc_bom_all_materials_for_quantity(cat, repo, calc):
+    rows = by_name(calc.calc_bom(cat.id("Комбо на двоих"), D("10"), None, now()))
     assert set(rows) == {
         "Мука пшеничная", "Вода питьевая", "Дрожжи", "Томаты", "Базилик", "Моцарелла", "Пармезан"
     }
@@ -94,27 +101,27 @@ def test_calc_bom_all_materials_for_quantity(cat, repo):
     assert rows["Моцарелла"]["total_quantity"] == pytest.approx(D("2.4"))
 
 
-def test_calc_bom_by_class_includes_subclasses(cat, repo):
+def test_calc_bom_by_class_includes_subclasses(cat, repo, calc):
     cls_id = cat.classes["Молочные продукты"].id  # «Сыры» — подкласс
-    rows = by_name(repo.calc_bom(cat.id("Комбо на двоих"), D("10"), cls_id, now()))
+    rows = by_name(calc.calc_bom(cat.id("Комбо на двоих"), D("10"), cls_id, now()))
     assert set(rows) == {"Моцарелла", "Пармезан"}
     assert rows["Пармезан"]["total_quantity"] == pytest.approx(D("0.3"))
 
 
-def test_calc_bom_by_class_of_semi_products_does_not_double_count(cat, repo):
+def test_calc_bom_by_class_of_semi_products_does_not_double_count(cat, repo, calc):
     cls_id = cat.classes["Продукты"].id  # корневой класс: берётся первый компонент класса на пути
-    rows = by_name(repo.calc_bom(cat.id("Комбо на двоих"), D("1"), cls_id, now()))
+    rows = by_name(calc.calc_bom(cat.id("Комбо на двоих"), D("1"), cls_id, now()))
     assert set(rows) == {"Пицца Маргарита", "Пармезан"}
-    semi = by_name(repo.calc_bom(cat.id("Комбо на двоих"), D("10"), cat.classes["Полуфабрикаты"].id, now()))
+    semi = by_name(calc.calc_bom(cat.id("Комбо на двоих"), D("10"), cat.classes["Полуфабрикаты"].id, now()))
     assert semi["Тесто для пиццы"]["total_quantity"] == pytest.approx(D("5"))
     assert semi["Соус томатный"]["total_quantity"] == pytest.approx(D("1.6"))
     assert "Мука пшеничная" not in semi
 
 
 # ------------------------------------------------------------ время и версии
-def test_versions_give_state_at_date(cat, repo, session):
+def test_versions_give_state_at_date(cat, repo, session, calc):
     before = now()
-    row = session.get(ItemBom, repo.effective_row(cat.id("Пицца Маргарита"), cat.id("Моцарелла"), before)["bom_id"])
+    row = session.get(ItemBom, calc.effective_row(cat.id("Пицца Маргарита"), cat.id("Моцарелла"), before)["bom_id"])
     t = now()
     repo.close(row, t)
     repo.create({
@@ -122,24 +129,24 @@ def test_versions_give_state_at_date(cat, repo, session):
         "quantity": D("150"), "for_quantity": D("1"), "unit_quantity_id": row.unit_quantity_id,
         "order_number": row.order_number, "valid_from": t,
     })
-    assert repo.effective_row(cat.id("Пицца Маргарита"), cat.id("Моцарелла"), before)["quantity"] == D("120")
-    assert repo.effective_row(cat.id("Пицца Маргарита"), cat.id("Моцарелла"), now())["quantity"] == D("150")
+    assert calc.effective_row(cat.id("Пицца Маргарита"), cat.id("Моцарелла"), before)["quantity"] == D("120")
+    assert calc.effective_row(cat.id("Пицца Маргарита"), cat.id("Моцарелла"), now())["quantity"] == D("150")
 
 
 # ------------------------------------------------------------ циклы и ограничения
-def test_cycle_is_detected_without_infinite_recursion(cat, repo):
+def test_cycle_is_detected_without_infinite_recursion(cat, repo, calc):
     # Соус -> Пицца при Пицца -> Соус: обходим ограничения сервиса, пишем напрямую
     repo.create({
         "parent_item_id": cat.id("Соус томатный"), "component_item_id": cat.id("Пицца Маргарита"),
         "quantity": D("1"), "valid_from": now(),
     })
-    assert repo.has_cycle(cat.id("Пицца Маргарита"), now()) is True
-    nodes = repo.find_bom(cat.id("Пицца Маргарита"), now())
+    assert calc.has_cycle(cat.id("Пицца Маргарита"), now()) is True
+    nodes = calc.find_bom(cat.id("Пицца Маргарита"), now())
     assert any(n["is_cycle"] for n in nodes)  # обход завершился и пометил цикл
 
 
-def test_no_cycle_in_valid_catalog(cat, repo):
-    assert repo.has_cycle(cat.id("Комбо на двоих"), now()) is False
+def test_no_cycle_in_valid_catalog(cat, repo, calc):
+    assert calc.has_cycle(cat.id("Комбо на двоих"), now()) is False
 
 
 @pytest.mark.parametrize(

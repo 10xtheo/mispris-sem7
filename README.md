@@ -11,17 +11,17 @@ REST API на FastAPI + PostgreSQL. Дисциплина «Методы и ср�
 ## Архитектура
 
 ```
-Router (HTTP) → Service (бизнес-правила) → Repository (SQL/ORM) → PostgreSQL (таблицы + SQL-функции)
+Router (HTTP) → Service (бизнес-правила) → Repository (ORM) → PostgreSQL (таблицы)
 ```
 
 | Слой | Ответственность |
 |---|---|
 | `src/routers/` | HTTP: маршруты, валидация входа/выхода (Pydantic) |
-| `src/services/` | Бизнес-логика; выбрасывает доменные исключения `src/core/errors.py` |
-| `src/repository/` | Запросы к БД, вызовы SQL-функций; только `flush()`, без `commit()` |
+| `src/services/` | Бизнес-логика и расчёты (`BomCalculator`); выбрасывает доменные исключения `src/core/errors.py` |
+| `src/repository/` | Запросы к БД через ORM; только `flush()`, без `commit()` |
 | `src/models/` | Таблицы SQLModel |
 | `src/schemas/` | Схемы запросов и ответов |
-| `alembic/versions/` | Миграции: `001` — схема №1–4, `002` — BOM (№5) и SQL-функции |
+| `alembic/versions/` | Миграции: `001` — схема №1–4, `002` — BOM (№5) |
 
 - **Транзакция на запрос.** `get_session()` делает commit при успехе и rollback при ошибке, поэтому составные операции (например, правка состава + запись истории) атомарны.
 - **Ошибки.** Доменные исключения переводятся в HTTP-коды: `NotFoundError` → 404, `BusinessRuleError` → 400, `ConflictError` → 409. Нарушение ограничений БД (`IntegrityError`) → 409. Ошибки валидации входа → 422.
@@ -32,11 +32,11 @@ Router (HTTP) → Service (бизнес-правила) → Repository (SQL/ORM)
 
 | Процедура задания | Реализация | API |
 |---|---|---|
-| `FIND_BOM(pIdProd)` | SQL-функция `find_bom(item, at)` (рекурсивный CTE) | `GET /api/items/{id}/bom/tree` |
-| `CALC_BOM(pIdProd, pQ)` | SQL-функция `calc_bom(item, qty, class, at)` | `GET /api/items/{id}/bom/norms?quantity=&class_id=` |
+| `FIND_BOM(pIdProd)` | `BomCalculator.find_bom(item, at)` (обход в глубину) | `GET /api/items/{id}/bom/tree` |
+| `CALC_BOM(pIdProd, pQ)` | `BomCalculator.calc_bom(item, qty, class, at)` | `GET /api/items/{id}/bom/norms?quantity=&class_id=` |
 | `CREATE_MODIFICATION(pIdBase, pName)` | `BomService.create_modification` | `POST /api/items/{id}/modifications` |
 | `REGISTER_CHANGE(pIdProd, pChangeDesc)` | `BomService._register_change` (вызывается каждой правкой) | `GET /api/items/{id}/bom/changes` |
-| — | действующая спецификация на дату: `effective_bom(item, at)` | `GET /api/items/{id}/bom?at=` |
+| — | действующая спецификация на дату: `BomCalculator.effective(item, at)` | `GET /api/items/{id}/bom?at=` |
 | — | добавить / изменить норму / заменить / удалить компонент | `POST /bom`, `PUT /bom/{comp}`, `POST /bom/{comp}/replace`, `DELETE /bom/{comp}` |
 
 Правила:
@@ -66,8 +66,8 @@ pytest            # создаёт/пересоздаёт БД mispis_sem7_test,
 
 | Уровень | Папка | Что проверяется |
 |---|---|---|
-| Модульный | `tests/unit` | схемы и валидация, вспомогательные функции, правила сервиса на заглушках, проверка циклов в классификаторе |
-| БД | `tests/db` | SQL-функции (`effective_bom`, `find_bom`, `calc_bom`, `bom_has_cycle`), ограничения БД, сервис BOM: версии, история, модификации |
+| Модульный | `tests/unit` | расчёты `BomCalculator` на заглушках, схемы и валидация, вспомогательные функции, правила сервиса на заглушках, проверка циклов в классификаторе |
+| БД | `tests/db` | расчёты `BomCalculator` на реальной БД (`effective`, `find_bom`, `calc_bom`, `has_cycle`), ограничения БД, сервис BOM: версии, история, модификации |
 | API | `tests/api` | каждый эндпоинт BOM, коды 200/201/204/400/404/409/422, откат транзакции при ошибке, регрессия ХО (№4) |
 | Сценарии | `tests/e2e` | требования задания №5 (Т1–Т6) только через HTTP |
 | Миграции | `tests/test_migrations.py` | upgrade → downgrade → upgrade, совпадение моделей и схемы |

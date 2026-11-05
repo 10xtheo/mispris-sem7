@@ -6,7 +6,12 @@ from fastapi import APIRouter, Depends, Query
 from sqlmodel import Session
 
 from src.database.database import get_session
-from src.repository.bom_repository import ItemBomRepository, ItemChangeRepository, ModificationRepository
+from src.repository.bom_repository import (
+    ItemBomRepository,
+    ItemCatalogRepository,
+    ItemChangeRepository,
+    ModificationRepository,
+)
 from src.repository.classifier_repository import ItemClassifierRepository
 from src.repository.enum_repository import EnumValueRepository
 from src.repository.item_repository import ItemRepository, UnitQuantityRepository
@@ -38,6 +43,7 @@ def get_bom_service(session: Session = Depends(get_session)) -> BomService:
         enum_values=EnumValueRepository(session),
         units=UnitQuantityRepository(session),
         classifiers=ItemClassifierRepository(session),
+        catalog=ItemCatalogRepository(session),
     )
 
 
