@@ -235,3 +235,15 @@ def test_duplicate_modification_number_conflict(cat, spicy):
         cat.service.create_modification(
             cat.id("Пицца Маргарита"), ModificationCreate(name="Ещё", number=spicy.number)
         )
+
+
+def test_unit_used_in_specification_cannot_be_deleted(cat, session):
+    # Иначе норма «130 г» после удаления ЕИ «г» молча пересчиталась бы с коэффициентом 1 (130 кг)
+    from sqlalchemy.exc import IntegrityError
+
+    gram = cat.uq[("Моцарелла", "г")]
+    assert any(r.unit_quantity_id == gram.id for r in spec(cat, "Пицца Маргарита").values())
+    with pytest.raises(IntegrityError):
+        with session.begin_nested():
+            session.delete(gram)
+            session.flush()

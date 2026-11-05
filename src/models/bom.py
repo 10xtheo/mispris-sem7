@@ -40,7 +40,7 @@ class ItemBom(SQLModel, table=True):
     component_item_id: int = Field(foreign_key="item.id")
     quantity: Decimal = Field(decimal_places=6, max_digits=18)
     for_quantity: Decimal = Field(default=Decimal("1"), decimal_places=6, max_digits=18)
-    unit_quantity_id: Optional[int] = Field(default=None, foreign_key="unit_quantity.id")
+    unit_quantity_id: Optional[int] = Field(default=None, foreign_key="unit_quantity.id", ondelete="RESTRICT")
     is_base: bool = Field(default=True)
     is_excluded: bool = Field(default=False)
     order_number: int = Field(default=0)

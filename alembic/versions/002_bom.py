@@ -61,7 +61,7 @@ def upgrade() -> None:
         sa.Column("valid_to", sa.DateTime(timezone=True), nullable=True),
         sa.ForeignKeyConstraint(["parent_item_id"], ["item.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["component_item_id"], ["item.id"], ondelete="RESTRICT"),
-        sa.ForeignKeyConstraint(["unit_quantity_id"], ["unit_quantity.id"], ondelete="SET NULL"),
+        sa.ForeignKeyConstraint(["unit_quantity_id"], ["unit_quantity.id"], ondelete="RESTRICT"),
         sa.PrimaryKeyConstraint("id"),
         sa.CheckConstraint("parent_item_id <> component_item_id", name="ck_item_bom_not_self"),
         sa.CheckConstraint("quantity > 0 OR is_excluded", name="ck_item_bom_quantity_positive"),
