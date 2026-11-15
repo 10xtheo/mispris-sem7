@@ -137,7 +137,9 @@ class ConfigurationService:
         """CHECK_CONSTRAINTS: проверяет все правила типового изделия."""
         _, context = self.validated_values(item_id, values)
         failed = []
-        for rule in self.repo.rows(ConfigurationConstraint, template_id=item_id):
+        for rule in self.repo.rows(
+            ConfigurationConstraint, template_id=item_id
+        ):
             try:
                 from src.repository.rule_repository import RuleRepository
                 result = self.interpreter().evaluate(
