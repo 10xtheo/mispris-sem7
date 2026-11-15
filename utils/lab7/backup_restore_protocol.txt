@@ -1,0 +1,1 @@
+PASS: pg_restore into a fresh database; migration=005; orders=1; rule expressions=18. Temporary database removed.

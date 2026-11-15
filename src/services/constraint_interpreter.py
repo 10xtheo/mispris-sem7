@@ -36,7 +36,9 @@ class ConstraintInterpreter:
                 context.prec = 28
                 return self._eval(expression, values, (), 0)
         except (InvalidOperation, OverflowError, ZeroDivisionError) as exc:
-            raise BusinessRuleError("Недопустимое арифметическое действие") from exc
+            raise BusinessRuleError(
+                "Недопустимое арифметическое действие"
+            ) from exc
 
     def validate(self, expression, parameters):
         """Проверка структуры и типов всех ветвей до сохранения правила."""

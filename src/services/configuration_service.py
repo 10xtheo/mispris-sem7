@@ -140,11 +140,16 @@ class ConfigurationService:
         for rule in self.repo.rows(ConfigurationConstraint, template_id=item_id):
             try:
                 from src.repository.rule_repository import RuleRepository
-                result = self.interpreter().evaluate(RuleRepository(self.repo.session).constraint(rule.id), context)
+                result = self.interpreter().evaluate(
+                    RuleRepository(self.repo.session).constraint(rule.id),
+                    context,
+                )
                 if ConstraintInterpreter.typed(result, "bool") is not True:
                     failed.append(rule.name)
             except BusinessRuleError as exc:
-                raise BusinessRuleError(f"Ограничение «{rule.name}»: {exc.detail}") from exc
+                raise BusinessRuleError(
+                    f"Ограничение «{rule.name}»: {exc.detail}"
+                ) from exc
         return {"valid": not failed, "violations": failed}
 
     def create_variant(self, item_id, data):
