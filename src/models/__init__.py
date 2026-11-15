@@ -23,6 +23,10 @@ from src.models.technology import (
     WorkCenter,
 )
 from src.models.units import UnitSimple
+from src.models.configuration import (
+    ItemConfiguration, ClassConfigurationParameter, VariantParameterValue,
+    ConfigurationFunction, ConfigurationConstraint, CustomerOrder, CustomerOrderPosition,
+)
 
 __all__ = [
     "EnumType",

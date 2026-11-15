@@ -1,0 +1,22 @@
+HTTP acceptance: 21 checks passed
+200 GET /health
+200 GET /api/items/?limit=100
+200 GET /api/enums/types
+200 GET /api/enums/values/by-type/6
+200 GET /api/configuration/items/22/parameters
+200 GET /api/configuration/items/22/constraints
+200 POST /api/configuration/items/22/check
+200 POST /api/configuration/items/22/check
+400 POST /api/configuration/items/22/variants
+200 GET /api/items/?limit=100
+404 POST /api/configuration/items/22/check
+400 POST /api/configuration/evaluate
+200 GET /api/configuration/orders/1
+200 GET /api/configuration/orders/1/cost?pricelist_set_id=1
+200 GET /api/configuration/orders/1/print
+201 POST /api/configuration/orders
+400 POST /api/configuration/orders/2/positions
+201 POST /api/configuration/orders/2/positions
+200 PUT /api/configuration/orders/2/positions/3
+200 POST /api/configuration/orders/2/agree
+409 DELETE /api/configuration/orders/2/positions/3

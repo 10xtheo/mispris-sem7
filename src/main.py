@@ -28,7 +28,8 @@ app = FastAPI(
         "API информационной системы сервиса доставки готовой еды: классификаторы, перечисления, "
         "параметры, справочник изделий, хозяйственные операции (№4) и материальные спецификации "
         "изделий — BOM, модификации, история изменений, сводные нормы расхода (№5). "
-        "Маршрутная технология, типовые процессы, нормы расхода, трудоёмкость и себестоимость (№6)."
+        "Маршрутная технология, типовые процессы, нормы расхода, трудоёмкость и себестоимость (№6). "
+        "Конфигурируемые изделия, варианты исполнения, сложные ограничения и заказы (№7)."
     ),
 )
 
@@ -69,3 +70,24 @@ def health():
 
 
 apply_summaries(app)
+
+# Операции №7 содержат русские summary непосредственно в декораторах.
+from src.routers.configuration import router as configuration_router
+app.include_router(configuration_router, prefix="/api/configuration", tags=["Конфигурации и заказы (№7)"])
+
+
+@app.get("/openapi-lab7.json", include_in_schema=False)
+def lab7_openapi():
+    from copy import deepcopy
+    schema = deepcopy(app.openapi())
+    schema["paths"] = {path: operations for path, operations in schema["paths"].items()
+                       if path.startswith("/api/configuration")}
+    schema["info"]["title"] = "МиСПрИС — заказы с вариантами исполнения (№7)"
+    return schema
+
+
+@app.get("/docs/lab7", include_in_schema=False)
+def lab7_docs():
+    from fastapi.openapi.docs import get_swagger_ui_html
+    return get_swagger_ui_html(openapi_url="/openapi-lab7.json", title="МиСПрИС №7 — Swagger",
+                               swagger_ui_parameters={"defaultModelsExpandDepth": -1})

@@ -98,6 +98,9 @@ def add(session: Session, obj):
 
 
 def seed(session: Session) -> None:
+    session.execute(text("TRUNCATE TABLE customer_order_position, customer_order, configuration_constraint, "
+                         "configuration_function, variant_parameter_value, class_configuration_parameter, "
+                         "item_configuration RESTART IDENTITY CASCADE"))
     session.execute(text(f"TRUNCATE TABLE {TABLES} RESTART IDENTITY CASCADE"))
 
     # ---------- перечисления
@@ -250,6 +253,8 @@ def seed(session: Session) -> None:
                                     is_required=True))
     kitchen = add(session, Sxd(name="Горячий цех", entity_type_id=ev["sxd_type.dept"].id))
     seed_technology(session, items, uq, ev, kitchen.id)
+    from data.configuration_seed import seed_configuration
+    seed_configuration(session)
     _ = date.today()
 
 
