@@ -44,7 +44,6 @@ class ConfigurationFunction(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     code: str = Field(max_length=50, unique=True)
     name: str = Field(max_length=255)
-    definition: dict = Field(sa_column=Column(JSONB, nullable=False))
 
 
 class ConfigurationConstraint(SQLModel, table=True):
@@ -53,7 +52,6 @@ class ConfigurationConstraint(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     template_id: int = Field(foreign_key="item.id")
     name: str = Field(max_length=255)
-    expression: dict = Field(sa_column=Column(JSONB, nullable=False))
 
 
 class CustomerOrder(SQLModel, table=True):

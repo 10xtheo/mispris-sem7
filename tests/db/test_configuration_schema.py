@@ -3,7 +3,9 @@ from sqlmodel import SQLModel
 
 
 TABLES = ("item_configuration", "class_configuration_parameter", "variant_parameter_value",
-          "configuration_function", "configuration_constraint", "customer_order", "customer_order_position")
+          "configuration_function", "configuration_constraint", "customer_order", "customer_order_position",
+          "rule_function_class","rule_operator","rule_formal_argument","rule_constant",
+          "rule_expression","rule_actual_argument","rule_function_definition","rule_constraint_root")
 
 
 def test_lab7_keys_checks_and_uniques_match_models(session):

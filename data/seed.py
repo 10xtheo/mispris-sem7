@@ -98,6 +98,8 @@ def add(session: Session, obj):
 
 
 def seed(session: Session) -> None:
+    session.execute(text("TRUNCATE TABLE rule_actual_argument, rule_expression, rule_constant, "
+                         "rule_formal_argument, rule_function_definition, rule_constraint_root RESTART IDENTITY CASCADE"))
     session.execute(text("TRUNCATE TABLE customer_order_position, customer_order, configuration_constraint, "
                          "configuration_function, variant_parameter_value, class_configuration_parameter, "
                          "item_configuration RESTART IDENTITY CASCADE"))

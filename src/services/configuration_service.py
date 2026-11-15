@@ -119,7 +119,19 @@ class ConfigurationService:
         return specs, result
 
     def interpreter(self):
-        return ConstraintInterpreter({row.code: row.definition for row in self.repo.rows(ConfigurationFunction)})
+        from src.repository.rule_repository import RuleRepository
+        rules=RuleRepository(self.repo.session)
+        return ConstraintInterpreter({row.code: rules.definition(row.id) for row in self.repo.rows(ConfigurationFunction)})
+
+    def list_functions(self):
+        from src.repository.rule_repository import RuleRepository
+        rules=RuleRepository(self.repo.session)
+        return [{**row.model_dump(),"definition":rules.definition(row.id)} for row in self.repo.rows(ConfigurationFunction)]
+
+    def list_constraints(self,item_id):
+        from src.repository.rule_repository import RuleRepository
+        rules=RuleRepository(self.repo.session)
+        return [{**row.model_dump(),"expression":rules.constraint(row.id)} for row in self.repo.rows(ConfigurationConstraint,template_id=item_id)]
 
     def check_constraints(self, item_id, values):
         """CHECK_CONSTRAINTS: проверяет все правила типового изделия."""
@@ -127,7 +139,8 @@ class ConfigurationService:
         failed = []
         for rule in self.repo.rows(ConfigurationConstraint, template_id=item_id):
             try:
-                result = self.interpreter().evaluate(rule.expression, context)
+                from src.repository.rule_repository import RuleRepository
+                result = self.interpreter().evaluate(RuleRepository(self.repo.session).constraint(rule.id), context)
                 if ConstraintInterpreter.typed(result, "bool") is not True:
                     failed.append(rule.name)
             except BusinessRuleError as exc:
@@ -180,13 +193,15 @@ class ConfigurationService:
         if self.repo.rows(ConfigurationFunction, code=data.code):
             raise ConflictError("Код функции занят")
         definition = data.definition.model_dump()
-        functions = {row.code: row.definition for row in self.repo.rows(ConfigurationFunction)}
+        functions = {row["code"]: row["definition"] for row in self.list_functions()}
         functions[data.code] = definition
         expression = {"kind": "call", "function": data.code, "args": {
             name: {"kind": "param", "name": name} for name in definition["parameters"]}}
         ConstraintInterpreter(functions).validate(expression, definition["parameters"])
-        return self.repo.save(ConfigurationFunction(code=data.code, name=data.name,
-                                                     definition=data.definition.model_dump()))
+        from src.repository.rule_repository import RuleRepository
+        row=self.repo.save(ConfigurationFunction(code=data.code,name=data.name))
+        RuleRepository(self.repo.session).store_function(row.id,definition)
+        return {**row.model_dump(),"definition":definition}
 
     def save_constraint(self, item_id, data):
         self.repo.lock()
@@ -197,7 +212,10 @@ class ConfigurationService:
                       for row in self.config_params(item_id)}
         if self.interpreter().validate(data.expression, parameters) != "bool":
             raise BusinessRuleError("Ограничение должно возвращать логический результат")
-        return self.repo.save(ConfigurationConstraint(template_id=item_id, **data.model_dump()))
+        from src.repository.rule_repository import RuleRepository
+        row=self.repo.save(ConfigurationConstraint(template_id=item_id,name=data.name))
+        RuleRepository(self.repo.session).store_constraint(row.id,data.expression)
+        return {**row.model_dump(),"expression":data.expression}
 
     def ensure_class_mutable(self, class_id):
         # Менять опубликованную конфигурационную модель при существующих вариантах нельзя.
@@ -234,6 +252,9 @@ class ConfigurationService:
             raise NotFoundError("Ограничение не принадлежит шаблону")
         if self.repo.rows(ItemConfiguration, template_id=item_id):
             raise ConflictError("У шаблона уже есть варианты; менять правила нельзя")
+        from src.models.rule_structure import RuleConstraintRoot
+        root=self.repo.get(RuleConstraintRoot,constraint_id)
+        if root: self.repo.delete(root)
         self.repo.delete(row)
 
     def update_order(self, order_id, data):

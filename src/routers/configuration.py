@@ -57,7 +57,7 @@ def create_config_function(data: FunctionInput, svc=Depends(service)):
 
 @router.get("/functions", summary="Показать функции ограничений")
 def list_config_functions(svc=Depends(service)):
-    return svc.repo.rows(ConfigurationFunction)
+    return svc.list_functions()
 
 
 @router.post("/evaluate", summary="Вычислить выражение ограничения", description="EVAL_FUNCTION")
@@ -75,7 +75,7 @@ def create_config_constraint(item_id: int, data: ConstraintInput, svc=Depends(se
 @router.get("/items/{item_id}/constraints", summary="Показать ограничения шаблона")
 def list_config_constraints(item_id: int, svc=Depends(service)):
     svc.template(item_id)
-    return svc.repo.rows(ConfigurationConstraint, template_id=item_id)
+    return svc.list_constraints(item_id)
 
 
 @router.post("/orders", status_code=201, summary="Зарегистрировать заказ")

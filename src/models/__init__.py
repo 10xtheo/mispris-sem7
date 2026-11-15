@@ -23,6 +23,10 @@ from src.models.technology import (
     WorkCenter,
 )
 from src.models.units import UnitSimple
+from src.models.rule_structure import (
+    RuleFunctionClass, RuleOperator, RuleFormalArgument, RuleConstant,
+    RuleExpression, RuleActualArgument, RuleFunctionDefinition, RuleConstraintRoot,
+)
 from src.models.configuration import (
     ItemConfiguration, ClassConfigurationParameter, VariantParameterValue,
     ConfigurationFunction, ConfigurationConstraint, CustomerOrder, CustomerOrderPosition,
