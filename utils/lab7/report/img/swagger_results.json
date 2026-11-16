@@ -1,0 +1,505 @@
+[
+  {
+    "name": "t01_check",
+    "status": 200,
+    "request": {
+      "values": {
+        "diameter": 35,
+        "cheese_g": 100,
+        "topping": 18
+      }
+    },
+    "response": {
+      "valid": false,
+      "violations": [
+        "От 3 до 6 г сыра на сантиметр диаметра"
+      ]
+    }
+  },
+  {
+    "name": "t02_reject",
+    "status": 400,
+    "request": {
+      "number": "PZ-BAD",
+      "name": "Недопустимый вариант",
+      "values": {
+        "diameter": 35,
+        "cheese_g": 100,
+        "topping": 18
+      }
+    },
+    "response": {
+      "detail": "Нарушены ограничения: От 3 до 6 г сыра на сантиметр диаметра"
+    }
+  },
+  {
+    "name": "t03_create",
+    "status": 201,
+    "request": {
+      "number": "PZ-TEST-1794807866863",
+      "name": "Пицца для испытания",
+      "values": {
+        "diameter": 30,
+        "cheese_g": 130,
+        "topping": 18
+      }
+    },
+    "response": {
+      "item": {
+        "item_class_id": 16,
+        "number": "PZ-TEST-1794807866863",
+        "article": null,
+        "name": "Пицца для испытания",
+        "item_type_id": 3,
+        "id": 26,
+        "base_item_id": null
+      },
+      "configuration": {
+        "kind": "variant",
+        "template_id": 22,
+        "item_id": 26
+      },
+      "values": {
+        "diameter": 30,
+        "cheese_g": 130,
+        "topping": 18
+      },
+      "parameter_details": [
+        {
+          "code": "diameter",
+          "name": "Диаметр",
+          "value": 30,
+          "unit": "см"
+        },
+        {
+          "code": "cheese_g",
+          "name": "Масса сыра",
+          "value": 130,
+          "unit": "г"
+        },
+        {
+          "code": "topping",
+          "name": "Добавка",
+          "value": "Базилик",
+          "unit": null
+        }
+      ],
+      "base_unit": "шт"
+    }
+  },
+  {
+    "name": "t05_parameters",
+    "status": 200,
+    "response": [
+      {
+        "flag_conf": true,
+        "id": 1,
+        "display_order": 0,
+        "max_value": 35,
+        "class_id": 16,
+        "parameter_id": 2,
+        "required": true,
+        "min_value": 30,
+        "code": "diameter",
+        "name": "Диаметр",
+        "type": "real",
+        "enum_type_id": null,
+        "unit_simple_id": 6
+      },
+      {
+        "flag_conf": true,
+        "id": 2,
+        "display_order": 0,
+        "max_value": 210,
+        "class_id": 16,
+        "parameter_id": 3,
+        "required": true,
+        "min_value": 90,
+        "code": "cheese_g",
+        "name": "Масса сыра",
+        "type": "real",
+        "enum_type_id": null,
+        "unit_simple_id": 2
+      },
+      {
+        "flag_conf": true,
+        "id": 3,
+        "display_order": 0,
+        "max_value": null,
+        "class_id": 16,
+        "parameter_id": 4,
+        "required": true,
+        "min_value": null,
+        "code": "topping",
+        "name": "Добавка",
+        "type": "enum",
+        "enum_type_id": 6,
+        "unit_simple_id": null
+      }
+    ]
+  },
+  {
+    "name": "t06_constraints",
+    "status": 200,
+    "response": [
+      {
+        "template_id": 22,
+        "name": "Диаметр 30 или 35 см",
+        "id": 2,
+        "expression": {
+          "kind": "op",
+          "op": "in",
+          "args": [
+            {
+              "kind": "param",
+              "name": "diameter"
+            },
+            {
+              "kind": "const",
+              "value": 30
+            },
+            {
+              "kind": "const",
+              "value": 35
+            }
+          ]
+        }
+      },
+      {
+        "template_id": 22,
+        "name": "От 3 до 6 г сыра на сантиметр диаметра",
+        "id": 1,
+        "expression": {
+          "kind": "call",
+          "function": "CheeseRatio",
+          "args": {
+            "mass": {
+              "kind": "param",
+              "name": "cheese_g"
+            },
+            "size": {
+              "kind": "param",
+              "name": "diameter"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "t07_order",
+    "status": 200,
+    "response": {
+      "order": {
+        "number": "ORDER-007",
+        "customer": "Иван Иванов",
+        "status": "draft",
+        "id": 1,
+        "order_date": "2026-11-15",
+        "ho_id": null
+      },
+      "positions": [
+        {
+          "order_id": 1,
+          "number": 1,
+          "quantity": 2,
+          "item_id": 24,
+          "id": 1,
+          "item": {
+            "item_class_id": 16,
+            "number": "PZ-CONF-30",
+            "name": "Пицца 30 см",
+            "base_item_id": null,
+            "article": null,
+            "id": 24,
+            "item_type_id": 3
+          },
+          "configuration": {
+            "kind": "variant",
+            "template_id": 22,
+            "item_id": 24
+          },
+          "values": {
+            "diameter": 30,
+            "cheese_g": 130,
+            "topping": 18
+          },
+          "parameter_details": [
+            {
+              "code": "diameter",
+              "name": "Диаметр",
+              "value": 30,
+              "unit": "см"
+            },
+            {
+              "code": "cheese_g",
+              "name": "Масса сыра",
+              "value": 130,
+              "unit": "г"
+            },
+            {
+              "code": "topping",
+              "name": "Добавка",
+              "value": "Базилик",
+              "unit": null
+            }
+          ],
+          "base_unit": "шт"
+        },
+        {
+          "order_id": 1,
+          "number": 2,
+          "quantity": 1,
+          "item_id": 25,
+          "id": 2,
+          "item": {
+            "item_class_id": 16,
+            "number": "PZ-CONF-35",
+            "name": "Пицца 35 см",
+            "base_item_id": null,
+            "article": null,
+            "id": 25,
+            "item_type_id": 3
+          },
+          "configuration": {
+            "kind": "variant",
+            "template_id": 22,
+            "item_id": 25
+          },
+          "values": {
+            "diameter": 35,
+            "cheese_g": 160,
+            "topping": 19
+          },
+          "parameter_details": [
+            {
+              "code": "diameter",
+              "name": "Диаметр",
+              "value": 35,
+              "unit": "см"
+            },
+            {
+              "code": "cheese_g",
+              "name": "Масса сыра",
+              "value": 160,
+              "unit": "г"
+            },
+            {
+              "code": "topping",
+              "name": "Добавка",
+              "value": "Халапеньо",
+              "unit": null
+            }
+          ],
+          "base_unit": "шт"
+        }
+      ]
+    }
+  },
+  {
+    "name": "t08_cost",
+    "status": 200,
+    "response": {
+      "order_id": 1,
+      "currency": "RUB",
+      "positions": [
+        {
+          "number": 1,
+          "item_id": 24,
+          "quantity": 2,
+          "pricelist_set_id": 1,
+          "materials": [
+            {
+              "item_id": 1,
+              "unit_quantity_id": 1,
+              "quantity": 0.3,
+              "price": 30,
+              "cost": 9
+            },
+            {
+              "item_id": 2,
+              "unit_quantity_id": 2,
+              "quantity": 0.18,
+              "price": 35,
+              "cost": 6.3
+            },
+            {
+              "item_id": 3,
+              "unit_quantity_id": 4,
+              "quantity": 0.005,
+              "price": 40,
+              "cost": 0.2
+            },
+            {
+              "item_id": 4,
+              "unit_quantity_id": 6,
+              "quantity": 0.01,
+              "price": 45,
+              "cost": 0.45
+            },
+            {
+              "item_id": 5,
+              "unit_quantity_id": 8,
+              "quantity": 0.0091,
+              "price": 50,
+              "cost": 0.46
+            },
+            {
+              "item_id": 6,
+              "unit_quantity_id": 10,
+              "quantity": 0.26,
+              "price": 55,
+              "cost": 14.3
+            },
+            {
+              "item_id": 8,
+              "unit_quantity_id": 14,
+              "quantity": 0.192,
+              "price": 65,
+              "cost": 12.48
+            },
+            {
+              "item_id": 11,
+              "unit_quantity_id": 19,
+              "quantity": 0.0116,
+              "price": 80,
+              "cost": 0.93
+            },
+            {
+              "item_id": 13,
+              "unit_quantity_id": 23,
+              "quantity": 2,
+              "price": 90,
+              "cost": 180
+            }
+          ],
+          "labor": [
+            {
+              "profession_id": 3,
+              "qualification_id": 17,
+              "setup_minutes": 11,
+              "piece_minutes": 19.6,
+              "total_minutes": 30.6,
+              "hourly_rate": 360,
+              "cost": 183.6
+            },
+            {
+              "profession_id": 4,
+              "qualification_id": 17,
+              "setup_minutes": 0,
+              "piece_minutes": 2,
+              "total_minutes": 2,
+              "hourly_rate": 240,
+              "cost": 8
+            }
+          ],
+          "material_cost": 224.12,
+          "labor_cost": 191.6,
+          "total_cost": 415.72
+        },
+        {
+          "number": 2,
+          "item_id": 25,
+          "quantity": 1,
+          "pricelist_set_id": 1,
+          "materials": [
+            {
+              "item_id": 1,
+              "unit_quantity_id": 1,
+              "quantity": 0.2041668,
+              "price": 30,
+              "cost": 6.13
+            },
+            {
+              "item_id": 2,
+              "unit_quantity_id": 2,
+              "quantity": 0.12250008,
+              "price": 35,
+              "cost": 4.29
+            },
+            {
+              "item_id": 3,
+              "unit_quantity_id": 4,
+              "quantity": 0.00340278,
+              "price": 40,
+              "cost": 0.14
+            },
+            {
+              "item_id": 4,
+              "unit_quantity_id": 6,
+              "quantity": 0.00680556,
+              "price": 45,
+              "cost": 0.31
+            },
+            {
+              "item_id": 5,
+              "unit_quantity_id": 8,
+              "quantity": 0.00619306,
+              "price": 50,
+              "cost": 0.31
+            },
+            {
+              "item_id": 6,
+              "unit_quantity_id": 10,
+              "quantity": 0.16,
+              "price": 55,
+              "cost": 8.8
+            },
+            {
+              "item_id": 8,
+              "unit_quantity_id": 14,
+              "quantity": 0.1306668,
+              "price": 65,
+              "cost": 8.49
+            },
+            {
+              "item_id": 9,
+              "unit_quantity_id": 15,
+              "quantity": 0.03,
+              "price": 70,
+              "cost": 2.1
+            },
+            {
+              "item_id": 11,
+              "unit_quantity_id": 19,
+              "quantity": 0.00108889,
+              "price": 80,
+              "cost": 0.09
+            },
+            {
+              "item_id": 23,
+              "unit_quantity_id": 33,
+              "quantity": 1,
+              "price": 35,
+              "cost": 35
+            }
+          ],
+          "labor": [
+            {
+              "profession_id": 3,
+              "qualification_id": 17,
+              "setup_minutes": 11,
+              "piece_minutes": 12.811114,
+              "total_minutes": 23.811114,
+              "hourly_rate": 360,
+              "cost": 142.87
+            },
+            {
+              "profession_id": 4,
+              "qualification_id": 17,
+              "setup_minutes": 0,
+              "piece_minutes": 1,
+              "total_minutes": 1,
+              "hourly_rate": 240,
+              "cost": 4
+            }
+          ],
+          "material_cost": 65.66,
+          "labor_cost": 146.87,
+          "total_cost": 212.53
+        }
+      ],
+      "total_cost": 628.25
+    }
+  }
+]

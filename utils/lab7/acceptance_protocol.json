@@ -1,0 +1,1170 @@
+[
+  {
+    "method": "GET",
+    "path": "/health",
+    "expected_status": 200,
+    "actual_status": 200,
+    "request": null,
+    "response": {
+      "status": "ok"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/items/?limit=100",
+    "expected_status": 200,
+    "actual_status": 200,
+    "request": null,
+    "response": [
+      {
+        "id": 1,
+        "item_class_id": 3,
+        "number": "RM-001",
+        "article": null,
+        "name": "Мука пшеничная в/с",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 2,
+        "item_class_id": 8,
+        "number": "RM-002",
+        "article": null,
+        "name": "Вода питьевая",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 3,
+        "item_class_id": 3,
+        "number": "RM-003",
+        "article": null,
+        "name": "Дрожжи сухие",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 4,
+        "item_class_id": 8,
+        "number": "RM-004",
+        "article": null,
+        "name": "Масло оливковое",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 5,
+        "item_class_id": 7,
+        "number": "RM-005",
+        "article": null,
+        "name": "Соль",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 6,
+        "item_class_id": 5,
+        "number": "RM-010",
+        "article": null,
+        "name": "Моцарелла",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 7,
+        "item_class_id": 5,
+        "number": "RM-011",
+        "article": null,
+        "name": "Пармезан",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 8,
+        "item_class_id": 6,
+        "number": "RM-020",
+        "article": null,
+        "name": "Томаты",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 9,
+        "item_class_id": 6,
+        "number": "RM-021",
+        "article": null,
+        "name": "Халапеньо",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 10,
+        "item_class_id": 6,
+        "number": "RM-022",
+        "article": null,
+        "name": "Салат романо",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 11,
+        "item_class_id": 7,
+        "number": "RM-030",
+        "article": null,
+        "name": "Базилик свежий",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 12,
+        "item_class_id": 9,
+        "number": "RM-040",
+        "article": null,
+        "name": "Филе куриное",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 13,
+        "item_class_id": 10,
+        "number": "PK-001",
+        "article": null,
+        "name": "Коробка для пиццы 30 см",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 14,
+        "item_class_id": 10,
+        "number": "PK-002",
+        "article": null,
+        "name": "Контейнер для салата",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 15,
+        "item_class_id": 11,
+        "number": "SF-001",
+        "article": null,
+        "name": "Тесто для пиццы",
+        "item_type_id": 2,
+        "base_item_id": null
+      },
+      {
+        "id": 16,
+        "item_class_id": 11,
+        "number": "SF-002",
+        "article": null,
+        "name": "Соус томатный",
+        "item_type_id": 2,
+        "base_item_id": null
+      },
+      {
+        "id": 17,
+        "item_class_id": 11,
+        "number": "SF-003",
+        "article": null,
+        "name": "Соус цезарь",
+        "item_type_id": 2,
+        "base_item_id": null
+      },
+      {
+        "id": 18,
+        "item_class_id": 13,
+        "number": "PZ-001",
+        "article": null,
+        "name": "Пицца Маргарита 30 см",
+        "item_type_id": 3,
+        "base_item_id": null
+      },
+      {
+        "id": 19,
+        "item_class_id": 14,
+        "number": "SL-001",
+        "article": null,
+        "name": "Салат Цезарь с курицей",
+        "item_type_id": 3,
+        "base_item_id": null
+      },
+      {
+        "id": 20,
+        "item_class_id": 15,
+        "number": "CB-001",
+        "article": null,
+        "name": "Комбо «Обед на двоих»",
+        "item_type_id": 4,
+        "base_item_id": null
+      },
+      {
+        "id": 21,
+        "item_class_id": 13,
+        "number": "PZ-001-01",
+        "article": null,
+        "name": "Пицца Маргарита острая 30 см",
+        "item_type_id": 3,
+        "base_item_id": 18
+      },
+      {
+        "id": 22,
+        "item_class_id": 16,
+        "number": "PZ-CONF",
+        "article": null,
+        "name": "Пицца по индивидуальному заказу",
+        "item_type_id": 3,
+        "base_item_id": null
+      },
+      {
+        "id": 23,
+        "item_class_id": null,
+        "number": "PK-CONF-35",
+        "article": null,
+        "name": "Коробка для пиццы 35 см",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 24,
+        "item_class_id": 16,
+        "number": "PZ-CONF-30",
+        "article": null,
+        "name": "Пицца 30 см",
+        "item_type_id": 3,
+        "base_item_id": null
+      },
+      {
+        "id": 25,
+        "item_class_id": 16,
+        "number": "PZ-CONF-35",
+        "article": null,
+        "name": "Пицца 35 см",
+        "item_type_id": 3,
+        "base_item_id": null
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/enums/types",
+    "expected_status": 200,
+    "actual_status": 200,
+    "request": null,
+    "response": [
+      {
+        "id": 1,
+        "code": "item_type",
+        "name": "Тип изделия"
+      },
+      {
+        "id": 2,
+        "code": "bom_change_type",
+        "name": "Тип изменения спецификации"
+      },
+      {
+        "id": 3,
+        "code": "param_type",
+        "name": "Тип параметра"
+      },
+      {
+        "id": 4,
+        "code": "sxd_type",
+        "name": "Тип СХД"
+      },
+      {
+        "id": 5,
+        "code": "qualification",
+        "name": "Квалификация"
+      },
+      {
+        "id": 6,
+        "code": "pizza_topping",
+        "name": "Добавка пиццы"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/enums/values/by-type/6",
+    "expected_status": 200,
+    "actual_status": 200,
+    "request": null,
+    "response": [
+      {
+        "id": 18,
+        "enum_type_id": 6,
+        "order_number": 1,
+        "code": "basil",
+        "name": "Базилик",
+        "numeric_value": null,
+        "unit_id": null
+      },
+      {
+        "id": 19,
+        "enum_type_id": 6,
+        "order_number": 2,
+        "code": "chili",
+        "name": "Халапеньо",
+        "numeric_value": null,
+        "unit_id": null
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/configuration/items/22/parameters",
+    "expected_status": 200,
+    "actual_status": 200,
+    "request": null,
+    "response": [
+      {
+        "flag_conf": true,
+        "id": 1,
+        "display_order": 0,
+        "max_value": 35.0,
+        "class_id": 16,
+        "parameter_id": 2,
+        "required": true,
+        "min_value": 30.0,
+        "code": "diameter",
+        "name": "Диаметр",
+        "type": "real",
+        "enum_type_id": null,
+        "unit_simple_id": 6
+      },
+      {
+        "flag_conf": true,
+        "id": 2,
+        "display_order": 0,
+        "max_value": 210.0,
+        "class_id": 16,
+        "parameter_id": 3,
+        "required": true,
+        "min_value": 90.0,
+        "code": "cheese_g",
+        "name": "Масса сыра",
+        "type": "real",
+        "enum_type_id": null,
+        "unit_simple_id": 2
+      },
+      {
+        "flag_conf": true,
+        "id": 3,
+        "display_order": 0,
+        "max_value": null,
+        "class_id": 16,
+        "parameter_id": 4,
+        "required": true,
+        "min_value": null,
+        "code": "topping",
+        "name": "Добавка",
+        "type": "enum",
+        "enum_type_id": 6,
+        "unit_simple_id": null
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/configuration/items/22/constraints",
+    "expected_status": 200,
+    "actual_status": 200,
+    "request": null,
+    "response": [
+      {
+        "template_id": 22,
+        "name": "Диаметр 30 или 35 см",
+        "id": 2,
+        "expression": {
+          "kind": "op",
+          "op": "in",
+          "args": [
+            {
+              "kind": "param",
+              "name": "diameter"
+            },
+            {
+              "kind": "const",
+              "value": 30
+            },
+            {
+              "kind": "const",
+              "value": 35
+            }
+          ]
+        }
+      },
+      {
+        "template_id": 22,
+        "name": "От 3 до 6 г сыра на сантиметр диаметра",
+        "id": 1,
+        "expression": {
+          "kind": "call",
+          "function": "CheeseRatio",
+          "args": {
+            "mass": {
+              "kind": "param",
+              "name": "cheese_g"
+            },
+            "size": {
+              "kind": "param",
+              "name": "diameter"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/configuration/items/22/check",
+    "expected_status": 200,
+    "actual_status": 200,
+    "request": {
+      "values": {
+        "diameter": 30,
+        "cheese_g": 130,
+        "topping": 18
+      }
+    },
+    "response": {
+      "valid": true,
+      "violations": []
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/configuration/items/22/check",
+    "expected_status": 200,
+    "actual_status": 200,
+    "request": {
+      "values": {
+        "diameter": 35,
+        "cheese_g": 100,
+        "topping": 18
+      }
+    },
+    "response": {
+      "valid": false,
+      "violations": [
+        "От 3 до 6 г сыра на сантиметр диаметра"
+      ]
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/configuration/items/22/variants",
+    "expected_status": 400,
+    "actual_status": 400,
+    "request": {
+      "number": "BAD-ACC",
+      "name": "Ошибочный вариант",
+      "values": {
+        "diameter": 35,
+        "cheese_g": 100,
+        "topping": 18
+      }
+    },
+    "response": {
+      "detail": "Нарушены ограничения: От 3 до 6 г сыра на сантиметр диаметра"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/items/?limit=100",
+    "expected_status": 200,
+    "actual_status": 200,
+    "request": null,
+    "response": [
+      {
+        "id": 1,
+        "item_class_id": 3,
+        "number": "RM-001",
+        "article": null,
+        "name": "Мука пшеничная в/с",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 2,
+        "item_class_id": 8,
+        "number": "RM-002",
+        "article": null,
+        "name": "Вода питьевая",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 3,
+        "item_class_id": 3,
+        "number": "RM-003",
+        "article": null,
+        "name": "Дрожжи сухие",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 4,
+        "item_class_id": 8,
+        "number": "RM-004",
+        "article": null,
+        "name": "Масло оливковое",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 5,
+        "item_class_id": 7,
+        "number": "RM-005",
+        "article": null,
+        "name": "Соль",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 6,
+        "item_class_id": 5,
+        "number": "RM-010",
+        "article": null,
+        "name": "Моцарелла",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 7,
+        "item_class_id": 5,
+        "number": "RM-011",
+        "article": null,
+        "name": "Пармезан",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 8,
+        "item_class_id": 6,
+        "number": "RM-020",
+        "article": null,
+        "name": "Томаты",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 9,
+        "item_class_id": 6,
+        "number": "RM-021",
+        "article": null,
+        "name": "Халапеньо",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 10,
+        "item_class_id": 6,
+        "number": "RM-022",
+        "article": null,
+        "name": "Салат романо",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 11,
+        "item_class_id": 7,
+        "number": "RM-030",
+        "article": null,
+        "name": "Базилик свежий",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 12,
+        "item_class_id": 9,
+        "number": "RM-040",
+        "article": null,
+        "name": "Филе куриное",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 13,
+        "item_class_id": 10,
+        "number": "PK-001",
+        "article": null,
+        "name": "Коробка для пиццы 30 см",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 14,
+        "item_class_id": 10,
+        "number": "PK-002",
+        "article": null,
+        "name": "Контейнер для салата",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 15,
+        "item_class_id": 11,
+        "number": "SF-001",
+        "article": null,
+        "name": "Тесто для пиццы",
+        "item_type_id": 2,
+        "base_item_id": null
+      },
+      {
+        "id": 16,
+        "item_class_id": 11,
+        "number": "SF-002",
+        "article": null,
+        "name": "Соус томатный",
+        "item_type_id": 2,
+        "base_item_id": null
+      },
+      {
+        "id": 17,
+        "item_class_id": 11,
+        "number": "SF-003",
+        "article": null,
+        "name": "Соус цезарь",
+        "item_type_id": 2,
+        "base_item_id": null
+      },
+      {
+        "id": 18,
+        "item_class_id": 13,
+        "number": "PZ-001",
+        "article": null,
+        "name": "Пицца Маргарита 30 см",
+        "item_type_id": 3,
+        "base_item_id": null
+      },
+      {
+        "id": 19,
+        "item_class_id": 14,
+        "number": "SL-001",
+        "article": null,
+        "name": "Салат Цезарь с курицей",
+        "item_type_id": 3,
+        "base_item_id": null
+      },
+      {
+        "id": 20,
+        "item_class_id": 15,
+        "number": "CB-001",
+        "article": null,
+        "name": "Комбо «Обед на двоих»",
+        "item_type_id": 4,
+        "base_item_id": null
+      },
+      {
+        "id": 21,
+        "item_class_id": 13,
+        "number": "PZ-001-01",
+        "article": null,
+        "name": "Пицца Маргарита острая 30 см",
+        "item_type_id": 3,
+        "base_item_id": 18
+      },
+      {
+        "id": 22,
+        "item_class_id": 16,
+        "number": "PZ-CONF",
+        "article": null,
+        "name": "Пицца по индивидуальному заказу",
+        "item_type_id": 3,
+        "base_item_id": null
+      },
+      {
+        "id": 23,
+        "item_class_id": null,
+        "number": "PK-CONF-35",
+        "article": null,
+        "name": "Коробка для пиццы 35 см",
+        "item_type_id": 1,
+        "base_item_id": null
+      },
+      {
+        "id": 24,
+        "item_class_id": 16,
+        "number": "PZ-CONF-30",
+        "article": null,
+        "name": "Пицца 30 см",
+        "item_type_id": 3,
+        "base_item_id": null
+      },
+      {
+        "id": 25,
+        "item_class_id": 16,
+        "number": "PZ-CONF-35",
+        "article": null,
+        "name": "Пицца 35 см",
+        "item_type_id": 3,
+        "base_item_id": null
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/configuration/items/22/check",
+    "expected_status": 404,
+    "actual_status": 404,
+    "request": {
+      "values": {
+        "diameter": 30,
+        "cheese_g": 130,
+        "topping": 999999
+      }
+    },
+    "response": {
+      "detail": "enum_value: запись 999999 не найдена"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/configuration/evaluate",
+    "expected_status": 400,
+    "actual_status": 400,
+    "request": {
+      "expression": {
+        "kind": "op",
+        "op": "/",
+        "args": [
+          {
+            "kind": "const",
+            "value": 1
+          },
+          {
+            "kind": "const",
+            "value": 0
+          }
+        ]
+      }
+    },
+    "response": {
+      "detail": "Деление на ноль"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/configuration/orders/1",
+    "expected_status": 200,
+    "actual_status": 200,
+    "request": null,
+    "response": {
+      "order": {
+        "number": "ORDER-007",
+        "customer": "Иван Иванов",
+        "status": "draft",
+        "id": 1,
+        "order_date": "2026-11-15",
+        "ho_id": null
+      },
+      "positions": [
+        {
+          "order_id": 1,
+          "number": 1,
+          "quantity": 2.0,
+          "item_id": 24,
+          "id": 1,
+          "item": {
+            "item_class_id": 16,
+            "number": "PZ-CONF-30",
+            "name": "Пицца 30 см",
+            "base_item_id": null,
+            "article": null,
+            "id": 24,
+            "item_type_id": 3
+          },
+          "configuration": {
+            "kind": "variant",
+            "template_id": 22,
+            "item_id": 24
+          },
+          "values": {
+            "diameter": 30,
+            "cheese_g": 130,
+            "topping": 18
+          },
+          "parameter_details": [
+            {
+              "code": "diameter",
+              "name": "Диаметр",
+              "value": 30,
+              "unit": "см"
+            },
+            {
+              "code": "cheese_g",
+              "name": "Масса сыра",
+              "value": 130,
+              "unit": "г"
+            },
+            {
+              "code": "topping",
+              "name": "Добавка",
+              "value": "Базилик",
+              "unit": null
+            }
+          ],
+          "base_unit": "шт"
+        },
+        {
+          "order_id": 1,
+          "number": 2,
+          "quantity": 1.0,
+          "item_id": 25,
+          "id": 2,
+          "item": {
+            "item_class_id": 16,
+            "number": "PZ-CONF-35",
+            "name": "Пицца 35 см",
+            "base_item_id": null,
+            "article": null,
+            "id": 25,
+            "item_type_id": 3
+          },
+          "configuration": {
+            "kind": "variant",
+            "template_id": 22,
+            "item_id": 25
+          },
+          "values": {
+            "diameter": 35,
+            "cheese_g": 160,
+            "topping": 19
+          },
+          "parameter_details": [
+            {
+              "code": "diameter",
+              "name": "Диаметр",
+              "value": 35,
+              "unit": "см"
+            },
+            {
+              "code": "cheese_g",
+              "name": "Масса сыра",
+              "value": 160,
+              "unit": "г"
+            },
+            {
+              "code": "topping",
+              "name": "Добавка",
+              "value": "Халапеньо",
+              "unit": null
+            }
+          ],
+          "base_unit": "шт"
+        }
+      ]
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/configuration/orders/1/cost?pricelist_set_id=1",
+    "expected_status": 200,
+    "actual_status": 200,
+    "request": null,
+    "response": {
+      "order_id": 1,
+      "currency": "RUB",
+      "positions": [
+        {
+          "number": 1,
+          "item_id": 24,
+          "quantity": 2.0,
+          "pricelist_set_id": 1,
+          "materials": [
+            {
+              "item_id": 1,
+              "unit_quantity_id": 1,
+              "quantity": 0.3,
+              "price": 30.0,
+              "cost": 9.0
+            },
+            {
+              "item_id": 2,
+              "unit_quantity_id": 2,
+              "quantity": 0.18,
+              "price": 35.0,
+              "cost": 6.3
+            },
+            {
+              "item_id": 3,
+              "unit_quantity_id": 4,
+              "quantity": 0.005,
+              "price": 40.0,
+              "cost": 0.2
+            },
+            {
+              "item_id": 4,
+              "unit_quantity_id": 6,
+              "quantity": 0.01,
+              "price": 45.0,
+              "cost": 0.45
+            },
+            {
+              "item_id": 5,
+              "unit_quantity_id": 8,
+              "quantity": 0.0091,
+              "price": 50.0,
+              "cost": 0.46
+            },
+            {
+              "item_id": 6,
+              "unit_quantity_id": 10,
+              "quantity": 0.26,
+              "price": 55.0,
+              "cost": 14.3
+            },
+            {
+              "item_id": 8,
+              "unit_quantity_id": 14,
+              "quantity": 0.192,
+              "price": 65.0,
+              "cost": 12.48
+            },
+            {
+              "item_id": 11,
+              "unit_quantity_id": 19,
+              "quantity": 0.0116,
+              "price": 80.0,
+              "cost": 0.93
+            },
+            {
+              "item_id": 13,
+              "unit_quantity_id": 23,
+              "quantity": 2.0,
+              "price": 90.0,
+              "cost": 180.0
+            }
+          ],
+          "labor": [
+            {
+              "profession_id": 3,
+              "qualification_id": 17,
+              "setup_minutes": 11.0,
+              "piece_minutes": 19.6,
+              "total_minutes": 30.6,
+              "hourly_rate": 360.0,
+              "cost": 183.6
+            },
+            {
+              "profession_id": 4,
+              "qualification_id": 17,
+              "setup_minutes": 0.0,
+              "piece_minutes": 2.0,
+              "total_minutes": 2.0,
+              "hourly_rate": 240.0,
+              "cost": 8.0
+            }
+          ],
+          "material_cost": 224.12,
+          "labor_cost": 191.6,
+          "total_cost": 415.72
+        },
+        {
+          "number": 2,
+          "item_id": 25,
+          "quantity": 1.0,
+          "pricelist_set_id": 1,
+          "materials": [
+            {
+              "item_id": 1,
+              "unit_quantity_id": 1,
+              "quantity": 0.2041668,
+              "price": 30.0,
+              "cost": 6.13
+            },
+            {
+              "item_id": 2,
+              "unit_quantity_id": 2,
+              "quantity": 0.12250008,
+              "price": 35.0,
+              "cost": 4.29
+            },
+            {
+              "item_id": 3,
+              "unit_quantity_id": 4,
+              "quantity": 0.00340278,
+              "price": 40.0,
+              "cost": 0.14
+            },
+            {
+              "item_id": 4,
+              "unit_quantity_id": 6,
+              "quantity": 0.00680556,
+              "price": 45.0,
+              "cost": 0.31
+            },
+            {
+              "item_id": 5,
+              "unit_quantity_id": 8,
+              "quantity": 0.00619306,
+              "price": 50.0,
+              "cost": 0.31
+            },
+            {
+              "item_id": 6,
+              "unit_quantity_id": 10,
+              "quantity": 0.16,
+              "price": 55.0,
+              "cost": 8.8
+            },
+            {
+              "item_id": 8,
+              "unit_quantity_id": 14,
+              "quantity": 0.1306668,
+              "price": 65.0,
+              "cost": 8.49
+            },
+            {
+              "item_id": 9,
+              "unit_quantity_id": 15,
+              "quantity": 0.03,
+              "price": 70.0,
+              "cost": 2.1
+            },
+            {
+              "item_id": 11,
+              "unit_quantity_id": 19,
+              "quantity": 0.00108889,
+              "price": 80.0,
+              "cost": 0.09
+            },
+            {
+              "item_id": 23,
+              "unit_quantity_id": 33,
+              "quantity": 1.0,
+              "price": 35.0,
+              "cost": 35.0
+            }
+          ],
+          "labor": [
+            {
+              "profession_id": 3,
+              "qualification_id": 17,
+              "setup_minutes": 11.0,
+              "piece_minutes": 12.811114,
+              "total_minutes": 23.811114,
+              "hourly_rate": 360.0,
+              "cost": 142.87
+            },
+            {
+              "profession_id": 4,
+              "qualification_id": 17,
+              "setup_minutes": 0.0,
+              "piece_minutes": 1.0,
+              "total_minutes": 1.0,
+              "hourly_rate": 240.0,
+              "cost": 4.0
+            }
+          ],
+          "material_cost": 65.66,
+          "labor_cost": 146.87,
+          "total_cost": 212.53
+        }
+      ],
+      "total_cost": 628.25
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/configuration/orders/1/print",
+    "expected_status": 200,
+    "actual_status": 200,
+    "request": null,
+    "response": "<!doctype html><html lang=\"ru\"><meta charset=\"utf-8\"><title>Состав заказа</title>\n<style>body{font:14pt 'Times New Roman',serif;max-width:1000px;margin:30px auto;color:#000}\ntable{border-collapse:collapse;width:100%}td,th{border:1px solid #444;padding:9px;text-align:left}\n@page{size:A4 landscape;margin:20mm}h1{font-size:20pt}button{padding:10px}@media print{button{display:none}}</style>\n<button onclick=\"window.print()\">Печать / сохранить PDF</button><h1>Заказ ORDER-007</h1><p>Дата: 15.11.2026. Заказчик: Иван Иванов. Статус: черновик.</p><p>Состав заказа с выбранными параметрами вариантов исполнения.</p><table><thead><tr><th>Позиция</th><th>Обозначение</th><th>Изделие</th><th>Параметры варианта</th><th>Количество</th></tr></thead><tbody><tr><td>1</td><td>PZ-CONF-30</td><td>Пицца 30 см</td><td>Диаметр: 30 см; Масса сыра: 130 г; Добавка: Базилик</td><td>2.000000 шт</td></tr><tr><td>2</td><td>PZ-CONF-35</td><td>Пицца 35 см</td><td>Диаметр: 35 см; Масса сыра: 160 г; Добавка: Халапеньо</td><td>1.000000 шт</td></tr></tbody></table></html>"
+  },
+  {
+    "method": "POST",
+    "path": "/api/configuration/orders",
+    "expected_status": 201,
+    "actual_status": 201,
+    "request": {
+      "number": "ACC-7",
+      "customer": "Испытатель",
+      "order_date": "2026-11-15"
+    },
+    "response": {
+      "number": "ACC-7",
+      "customer": "Испытатель",
+      "order_date": "2026-11-15",
+      "ho_id": null,
+      "id": 2,
+      "status": "draft"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/configuration/orders/2/positions",
+    "expected_status": 400,
+    "actual_status": 400,
+    "request": {
+      "number": 1,
+      "item_id": 22,
+      "quantity": 1
+    },
+    "response": {
+      "detail": "В заказ нужно добавить вариант, а не шаблон"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/configuration/orders/2/positions",
+    "expected_status": 201,
+    "actual_status": 201,
+    "request": {
+      "number": 1,
+      "item_id": 24,
+      "quantity": 1
+    },
+    "response": {
+      "order_id": 2,
+      "number": 1,
+      "item_id": 24,
+      "quantity": "1",
+      "id": 3
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/api/configuration/orders/2/positions/3",
+    "expected_status": 200,
+    "actual_status": 200,
+    "request": {
+      "number": 1,
+      "item_id": 24,
+      "quantity": 2
+    },
+    "response": {
+      "order_id": 2,
+      "number": 1,
+      "quantity": "2",
+      "item_id": 24,
+      "id": 3
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/configuration/orders/2/agree",
+    "expected_status": 200,
+    "actual_status": 200,
+    "request": null,
+    "response": {
+      "number": "ACC-7",
+      "customer": "Испытатель",
+      "status": "agreed",
+      "id": 2,
+      "order_date": "2026-11-15",
+      "ho_id": null
+    }
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/configuration/orders/2/positions/3",
+    "expected_status": 409,
+    "actual_status": 409,
+    "request": null,
+    "response": {
+      "detail": "Согласованный заказ нельзя изменять"
+    }
+  }
+]
